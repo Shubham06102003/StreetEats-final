@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "606485890904",
+    "project_id": "streetfoodfinder-25bf8",
+    "storage_bucket": "streetfoodfinder-25bf8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:606485890904:android:e43a156526d01b43f5472d",
+        "android_client_info": {
+          "package_name": "com.shubham.streetfood.mobile_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBf74wNCqZcevIx7bwAkldKzDsWyV0_CiA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
