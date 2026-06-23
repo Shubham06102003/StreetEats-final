@@ -100,19 +100,44 @@ class ProfileScreen extends ConsumerWidget {
 
                 const SizedBox(height: 24),
 
-                ListTile(
-                  leading: const Icon(Icons.storefront),
-                  title: const Text('Become Vendor'),
-                  subtitle: Text(
-                    vendorStatus == 'none'
-                        ? 'Apply for vendor account'
-                        : vendorStatus,
+                if (vendorStatus == 'none')
+                  ListTile(
+                    leading: const Icon(Icons.storefront),
+                    title: const Text('Become Vendor'),
+                    subtitle: const Text('Apply for vendor account'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      context.push('/vendor-application');
+                    },
                   ),
-                  trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {
-                    context.push('/vendor-application');
-                  },
-                ),
+
+                if (vendorStatus == 'pending')
+                  const ListTile(
+                    leading: Icon(Icons.hourglass_top, color: Colors.orange),
+                    title: Text('Application Pending'),
+                    subtitle: Text('Waiting for admin approval'),
+                  ),
+
+                if (vendorStatus == 'approved')
+                  ListTile(
+                    leading: const Icon(Icons.store, color: Colors.green),
+                    title: const Text('Vendor Dashboard'),
+                    subtitle: const Text('Manage your stall'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      context.push('/vendor-dashboard');
+                    },
+                  ),
+
+                if (vendorStatus == 'rejected')
+                  ListTile(
+                    leading: const Icon(Icons.refresh, color: Colors.red),
+                    title: const Text('Apply Again'),
+                    trailing: const Icon(Icons.arrow_forward_ios),
+                    onTap: () {
+                      context.push('/vendor-application');
+                    },
+                  ),
 
                 const Divider(),
 
@@ -130,6 +155,13 @@ class ProfileScreen extends ConsumerWidget {
                   title: const Text('My Reviews'),
                   trailing: const Icon(Icons.arrow_forward_ios),
                   onTap: () {},
+                ),
+                ListTile(
+                  leading: const Icon(Icons.admin_panel_settings),
+                  title: const Text('Admin Dashboard'),
+                  onTap: () {
+                    context.push('/admin');
+                  },
                 ),
 
                 const Divider(),

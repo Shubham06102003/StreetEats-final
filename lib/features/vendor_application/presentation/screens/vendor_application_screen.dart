@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class VendorApplicationScreen extends StatefulWidget {
+import '../providers/vendor_application_provider.dart';
+
+class VendorApplicationScreen extends ConsumerStatefulWidget {
   const VendorApplicationScreen({super.key});
 
   @override
-  State<VendorApplicationScreen> createState() =>
+  ConsumerState<VendorApplicationScreen> createState() =>
       _VendorApplicationScreenState();
 }
 
-class _VendorApplicationScreenState extends State<VendorApplicationScreen> {
+class _VendorApplicationScreenState
+    extends ConsumerState<VendorApplicationScreen> {
   final ownerNameController = TextEditingController();
   final phoneController = TextEditingController();
   final whatsappController = TextEditingController();
@@ -100,6 +105,52 @@ class _VendorApplicationScreenState extends State<VendorApplicationScreen> {
     customSecondaryCategoryController.dispose();
 
     super.dispose();
+  }
+
+  Future<void> submitApplication() async {
+    try {
+      final primaryCategory = selectedPrimaryCategory == 'Other'
+          ? customPrimaryCategoryController.text.trim()
+          : selectedPrimaryCategory;
+
+      final secondaryCategory = selectedSecondaryCategory == 'Other'
+          ? customSecondaryCategoryController.text.trim()
+          : selectedSecondaryCategory;
+
+      await ref
+          .read(vendorApplicationProvider)
+          .submitApplication(
+            ownerName: ownerNameController.text.trim(),
+            phoneNumber: phoneController.text.trim(),
+            whatsappNumber: whatsappController.text.trim(),
+            businessName: businessNameController.text.trim(),
+            state: selectedState,
+            city: cityController.text.trim(),
+            operatingArea: areaController.text.trim(),
+            primaryCategory: primaryCategory,
+            secondaryCategory: secondaryCategory,
+            openingTime: openingTimeController.text.trim(),
+            closingTime: closingTimeController.text.trim(),
+            instagramUsername: instagramController.text.trim(),
+            description: descriptionController.text.trim(),
+          );
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Vendor application submitted successfully'),
+        ),
+      );
+
+      context.pop();
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
   }
 
   @override
@@ -275,7 +326,7 @@ class _VendorApplicationScreenState extends State<VendorApplicationScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: submitApplication,
                 child: const Text('Submit Application'),
               ),
             ),
