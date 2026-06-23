@@ -7,7 +7,6 @@ class FirestoreUserDataSource {
   required String uid,
   required String email,
 }) async {
-  print("CREATING FIRESTORE USER");
 
   await firestore.collection('users').doc(uid).set({
     'uid': uid,
@@ -17,6 +16,5 @@ class FirestoreUserDataSource {
     'createdAt': FieldValue.serverTimestamp(),
   });
 
-  print("FIRESTORE USER CREATED");
 }
 }
