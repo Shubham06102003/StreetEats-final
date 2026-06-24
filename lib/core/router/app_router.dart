@@ -8,6 +8,7 @@ import '../../features/vendor/presentation/screens/vendor_dashboard_screen.dart'
 import '../../features/location/presentation/screens/vendor_location_screen.dart';
 import '../../features/menu/presentation/screens/menu_screen.dart';
 import '../../features/menu/presentation/screens/add_menu_item_screen.dart';
+import '../../features/vendor/presentation/screens/stall_profile_screen.dart';
 
 final appRouter = GoRouter(
   routes: [
@@ -29,6 +30,11 @@ final appRouter = GoRouter(
       path: '/vendor-dashboard',
       builder: (context, state) => const VendorDashboardScreen(),
     ),
+    GoRoute(
+  path: '/stall-profile',
+  builder: (context, state) =>
+      const StallProfileScreen(),
+),
     GoRoute(
       path: '/vendor-location',
       builder: (context, state) => const VendorLocationScreen(),

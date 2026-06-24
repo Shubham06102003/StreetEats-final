@@ -18,8 +18,9 @@ class VendorDashboardScreen extends ConsumerWidget {
               leading: const Icon(Icons.storefront),
               title: const Text('My Stall'),
               subtitle: const Text('Manage business details'),
-              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                context.push('/stall-profile');
+              },
             ),
           ),
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../../../../core/providers/image_provider.dart';
 import '../menu_provider.dart';
 
 class AddMenuItemScreen extends ConsumerStatefulWidget {
