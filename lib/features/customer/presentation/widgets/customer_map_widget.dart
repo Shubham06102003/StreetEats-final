@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CustomerMapWidget extends StatelessWidget {
   final double userLatitude;
@@ -41,6 +42,12 @@ class CustomerMapWidget extends StatelessWidget {
           height: 60,
           child: GestureDetector(
             onTap: () {
+              FirebaseFirestore.instance.collection('analytics_events').add({
+                'eventType': 'map_pin_click',
+                'vendorId': vendorId,
+                'timestamp': FieldValue.serverTimestamp(),
+              });
+
               showModalBottomSheet(
                 context: context,
                 builder: (_) {

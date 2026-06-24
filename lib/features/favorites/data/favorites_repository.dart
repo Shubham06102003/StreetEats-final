@@ -2,15 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FavoritesRepository {
-  final FirebaseFirestore firestore =
-      FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  final FirebaseAuth auth =
-      FirebaseAuth.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
-  Future<void> toggleFavorite(
-    String vendorId,
-  ) async {
+  Future<void> toggleFavorite(String vendorId) async {
     final user = auth.currentUser;
 
     if (user == null) return;
@@ -28,14 +24,19 @@ class FavoritesRepository {
     } else {
       await docRef.set({
         'vendorId': vendorId,
-        'createdAt':
-            FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      await firestore.collection('analytics_events').add({
+        'eventType': 'vendor_favorite',
+        'vendorId': vendorId,
+        'userId': user.uid,
+        'timestamp': FieldValue.serverTimestamp(),
       });
     }
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>>
-      getFavorites() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getFavorites() {
     final user = auth.currentUser;
 
     return firestore
@@ -45,9 +46,7 @@ class FavoritesRepository {
         .snapshots();
   }
 
-  Stream<bool> isFavorite(
-    String vendorId,
-  ) {
+  Stream<bool> isFavorite(String vendorId) {
     final user = auth.currentUser;
 
     return firestore

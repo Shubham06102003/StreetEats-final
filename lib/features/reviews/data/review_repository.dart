@@ -14,39 +14,36 @@ class ReviewRepository {
   }
 
   Future<void> addReview({
-  required String vendorId,
-  required double rating,
-  required String review,
-}) async {
-  final user = auth.currentUser;
+    required String vendorId,
+    required double rating,
+    required String review,
+  }) async {
+    final user = auth.currentUser;
 
-  if (user == null) return;
+    if (user == null) return;
 
-  final userDoc = await firestore
-      .collection('users')
-      .doc(user.uid)
-      .get();
+    final userDoc = await firestore.collection('users').doc(user.uid).get();
 
-  final userData = userDoc.data();
+    final userData = userDoc.data();
 
-  await firestore
-      .collection('vendor_reviews')
-      .add({
-    'vendorId': vendorId,
-    'userId': user.uid,
-    'userName':
-        userData?['name'] ??
-        'Customer',
+    await firestore.collection('vendor_reviews').add({
+      'vendorId': vendorId,
+      'userId': user.uid,
+      'userName': userData?['name'] ?? 'Customer',
 
-    'userPhotoUrl':
-        userData?['photoUrl'] ??
-        '',
+      'userPhotoUrl': userData?['photoUrl'] ?? '',
 
-    'rating': rating,
-    'review': review,
+      'rating': rating,
+      'review': review,
 
-    'createdAt':
-        FieldValue.serverTimestamp(),
-  });
-}
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+
+    await firestore.collection('analytics_events').add({
+      'eventType': 'vendor_review',
+      'vendorId': vendorId,
+      'userId': user.uid,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  }
 }
