@@ -50,6 +50,7 @@ final appRouter = GoRouter(
           initialPrice: data['price'],
           initialCategory: data['category'],
           initialDescription: data['description'],
+          initialImageUrl: data['imageUrl'],
         );
       },
     ),

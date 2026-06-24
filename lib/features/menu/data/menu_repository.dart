@@ -59,12 +59,14 @@ class MenuRepository {
     required String menuCategory,
     required String description,
     required int basePrice,
+    required String imageUrl,
   }) async {
     await firestore.collection('menu_items').doc(menuItemId).update({
       'name': name,
       'menuCategory': menuCategory,
       'description': description,
       'basePrice': basePrice,
+      'imageUrl': imageUrl,
     });
   }
 }

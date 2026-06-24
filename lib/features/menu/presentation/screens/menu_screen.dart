@@ -44,7 +44,20 @@ class MenuScreen extends ConsumerWidget {
               return Card(
                 margin: const EdgeInsets.all(10),
                 child: ListTile(
-                  title: Text(data['name'] ?? ''),
+                  title: Row(
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        margin: const EdgeInsets.only(right: 12),
+                        child: (data['imageUrl'] ?? '').toString().isNotEmpty
+                            ? Image.network(data['imageUrl'], fit: BoxFit.cover)
+                            : const Icon(Icons.fastfood),
+                      ),
+
+                      Expanded(child: Text(data['name'] ?? '')),
+                    ],
+                  ),
 
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,6 +100,7 @@ class MenuScreen extends ConsumerWidget {
                                 'price': data['basePrice'],
                                 'category': data['menuCategory'],
                                 'description': data['description'],
+                                'imageUrl': data['imageUrl'],
                               },
                             );
                           },

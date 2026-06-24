@@ -9,6 +9,7 @@ class AddMenuItemScreen extends ConsumerStatefulWidget {
   final int? initialPrice;
   final String? initialCategory;
   final String? initialDescription;
+  final String? initialImageUrl;
 
   const AddMenuItemScreen({
     super.key,
@@ -17,6 +18,7 @@ class AddMenuItemScreen extends ConsumerStatefulWidget {
     this.initialPrice,
     this.initialCategory,
     this.initialDescription,
+    this.initialImageUrl,
   });
 
   @override
@@ -25,6 +27,7 @@ class AddMenuItemScreen extends ConsumerStatefulWidget {
 
 class _AddMenuItemScreenState extends ConsumerState<AddMenuItemScreen> {
   bool get isEditMode => widget.menuItemId != null;
+  String imageUrl = '';
   final nameController = TextEditingController();
   final priceController = TextEditingController();
   final descriptionController = TextEditingController();
@@ -55,6 +58,8 @@ class _AddMenuItemScreenState extends ConsumerState<AddMenuItemScreen> {
       descriptionController.text = widget.initialDescription ?? '';
 
       selectedCategory = widget.initialCategory ?? 'Food';
+
+      imageUrl = widget.initialImageUrl ?? '';
     }
   }
 
@@ -87,6 +92,7 @@ class _AddMenuItemScreenState extends ConsumerState<AddMenuItemScreen> {
               menuCategory: category,
               description: descriptionController.text.trim(),
               basePrice: int.parse(priceController.text.trim()),
+              imageUrl: imageUrl,
             );
       } else {
         await ref
@@ -96,7 +102,7 @@ class _AddMenuItemScreenState extends ConsumerState<AddMenuItemScreen> {
               menuCategory: category,
               description: descriptionController.text.trim(),
               basePrice: int.parse(priceController.text.trim()),
-              imageUrl: '',
+              imageUrl: imageUrl,
             );
       }
 
@@ -142,6 +148,50 @@ class _AddMenuItemScreenState extends ConsumerState<AddMenuItemScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            GestureDetector(
+              onTap: () async {
+                try {
+                  final uploadedUrl = await ref
+                      .read(imageUploadServiceProvider)
+                      .pickAndUploadImage();
+
+                  if (uploadedUrl != null) {
+                    setState(() {
+                      imageUrl = uploadedUrl;
+                    });
+                  }
+                } catch (e) {
+                  if (!context.mounted) return;
+
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(e.toString())));
+                }
+              },
+              child: Container(
+                height: 180,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: imageUrl.isEmpty
+                    ? const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_a_photo, size: 40),
+                          SizedBox(height: 8),
+                          Text('Select Food Image'),
+                        ],
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.network(imageUrl, fit: BoxFit.cover),
+                      ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
             TextField(
               controller: nameController,
               decoration: const InputDecoration(
