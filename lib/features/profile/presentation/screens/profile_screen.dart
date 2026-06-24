@@ -46,16 +46,23 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                   child: Column(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 40,
-                        child: Icon(Icons.person, size: 40),
+                        backgroundImage: (profile['photoUrl'] ?? '').isNotEmpty
+                            ? NetworkImage(profile['photoUrl'])
+                            : null,
+                        child: (profile['photoUrl'] ?? '').isEmpty
+                            ? const Icon(Icons.person, size: 40)
+                            : null,
                       ),
 
                       const SizedBox(height: 16),
 
-                      const Text(
-                        'Street Food User',
-                        style: TextStyle(
+                      Text(
+                        (profile['name'] ?? '').isEmpty
+                            ? 'Street Food User'
+                            : profile['name'],
+                        style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
                         ),
