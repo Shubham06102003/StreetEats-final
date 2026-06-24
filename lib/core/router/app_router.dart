@@ -6,6 +6,8 @@ import '../../features/vendor_application/presentation/screens/vendor_applicatio
 import '../../features/admin/presentation/screens/admin_dashboard_screen.dart';
 import '../../features/vendor/presentation/screens/vendor_dashboard_screen.dart';
 import '../../features/location/presentation/screens/vendor_location_screen.dart';
+import '../../features/menu/presentation/screens/menu_screen.dart';
+import '../../features/menu/presentation/screens/add_menu_item_screen.dart';
 
 final appRouter = GoRouter(
   routes: [
@@ -30,6 +32,26 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/vendor-location',
       builder: (context, state) => const VendorLocationScreen(),
+    ),
+    GoRoute(path: '/menu', builder: (context, state) => const MenuScreen()),
+
+    GoRoute(
+      path: '/add-menu-item',
+      builder: (context, state) => const AddMenuItemScreen(),
+    ),
+    GoRoute(
+      path: '/edit-menu-item',
+      builder: (context, state) {
+        final data = state.extra as Map<String, dynamic>;
+
+        return AddMenuItemScreen(
+          menuItemId: data['id'],
+          initialName: data['name'],
+          initialPrice: data['price'],
+          initialCategory: data['category'],
+          initialDescription: data['description'],
+        );
+      },
     ),
   ],
 );

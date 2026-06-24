@@ -29,7 +29,9 @@ class VendorDashboardScreen extends ConsumerWidget {
               title: const Text('My Menu'),
               subtitle: const Text('Manage food items'),
               trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {},
+              onTap: () {
+                context.push('/menu');
+              },
             ),
           ),
 
