@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AdminRepository {
-  final FirebaseFirestore firestore =
-      FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Stream<QuerySnapshot<Map<String, dynamic>>>
-      getPendingApplications() {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getPendingApplications() {
     return firestore
         .collection('vendor_applications')
         .where('status', isEqualTo: 'pending')
@@ -16,101 +14,70 @@ class AdminRepository {
     required String applicationId,
     required String userId,
   }) async {
-    await firestore
-        .collection('vendor_applications')
-        .doc(applicationId)
-        .update({
-      'status': 'approved',
-      'reviewedAt':
-          FieldValue.serverTimestamp(),
-    });
+    await firestore.collection('vendor_applications').doc(applicationId).update(
+      {'status': 'approved', 'reviewedAt': FieldValue.serverTimestamp()},
+    );
 
-    await firestore
-        .collection('users')
-        .doc(userId)
-        .update({
+    await firestore.collection('users').doc(userId).update({
       'role': 'vendor',
       'vendorStatus': 'approved',
     });
 
     final applicationDoc = await firestore
-    .collection('vendor_applications')
-    .doc(applicationId)
-    .get();
+        .collection('vendor_applications')
+        .doc(applicationId)
+        .get();
 
-final applicationData = applicationDoc.data();
+    final applicationData = applicationDoc.data();
 
-if (applicationData != null) {
-  await firestore
-      .collection('vendors')
-      .doc(userId)
-      .set({
-    'userId': userId,
+    if (applicationData != null) {
+      await firestore.collection('vendors').doc(userId).set({
+        'userId': userId,
 
-    'ownerName':
-        applicationData['ownerName'],
+        'ownerName': applicationData['ownerName'],
 
-    'businessName':
-        applicationData['businessName'],
+        'businessName': applicationData['businessName'],
 
-    'phoneNumber':
-        applicationData['phoneNumber'],
+        'stallName': applicationData['businessName'],
 
-    'whatsappNumber':
-        applicationData['whatsappNumber'],
+        'phoneNumber': applicationData['phoneNumber'],
 
-    'state':
-        applicationData['state'],
+        'whatsappNumber': applicationData['whatsappNumber'],
 
-    'city':
-        applicationData['city'],
+        'state': applicationData['state'],
 
-    'operatingArea':
-        applicationData['operatingArea'],
+        'city': applicationData['city'],
 
-    'primaryCategory':
-        applicationData['primaryCategory'],
+        'operatingArea': applicationData['operatingArea'],
 
-    'secondaryCategory':
-        applicationData['secondaryCategory'],
+        'primaryCategory': applicationData['primaryCategory'],
 
-    'openingTime':
-        applicationData['openingTime'],
+        'secondaryCategory': applicationData['secondaryCategory'],
 
-    'closingTime':
-        applicationData['closingTime'],
+        'openingTime': applicationData['openingTime'],
 
-    'instagramUsername':
-        applicationData['instagramUsername'],
+        'closingTime': applicationData['closingTime'],
 
-    'description':
-        applicationData['description'],
+        'instagramUsername': applicationData['instagramUsername'],
 
-    'isActive': true,
+        'description': applicationData['description'],
 
-    'createdAt':
-        FieldValue.serverTimestamp(),
-  });
-}
+        'isActive': true,
+
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
   }
 
   Future<void> rejectVendor({
     required String applicationId,
     required String userId,
   }) async {
-    await firestore
-        .collection('vendor_applications')
-        .doc(applicationId)
-        .update({
-      'status': 'rejected',
-      'reviewedAt':
-          FieldValue.serverTimestamp(),
-    });
+    await firestore.collection('vendor_applications').doc(applicationId).update(
+      {'status': 'rejected', 'reviewedAt': FieldValue.serverTimestamp()},
+    );
 
-    await firestore
-        .collection('users')
-        .doc(userId)
-        .update({
+    await firestore.collection('users').doc(userId).update({
       'vendorStatus': 'rejected',
     });
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import '../widgets/vendor_preview_card.dart';
 import '../../../../core/providers/image_provider.dart';
 import '../vendor_provider.dart';
 
@@ -26,11 +26,22 @@ class _StallProfileScreenState extends ConsumerState<StallProfileScreen> {
 
   String logoUrl = '';
   String coverImageUrl = '';
+  String primaryCategory = '';
+  String secondaryCategory = '';
 
   bool isLoading = false;
 
   @override
   void initState() {
+    stallNameController.addListener(() => setState(() {}));
+
+    descriptionController.addListener(() => setState(() {}));
+
+    instagramController.addListener(() => setState(() {}));
+
+    openingController.addListener(() => setState(() {}));
+
+    closingController.addListener(() => setState(() {}));
     super.initState();
     loadProfile();
   }
@@ -55,6 +66,10 @@ class _StallProfileScreenState extends ConsumerState<StallProfileScreen> {
     logoUrl = data['logoUrl'] ?? '';
 
     coverImageUrl = data['coverImageUrl'] ?? '';
+
+    primaryCategory = data['primaryCategory'] ?? '';
+
+    secondaryCategory = data['secondaryCategory'] ?? '';
 
     if (mounted) {
       setState(() {});
@@ -113,6 +128,18 @@ class _StallProfileScreenState extends ConsumerState<StallProfileScreen> {
   }
 
   @override
+  void dispose() {
+    stallNameController.dispose();
+    descriptionController.dispose();
+    whatsappController.dispose();
+    instagramController.dispose();
+    openingController.dispose();
+    closingController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('My Stall')),
@@ -120,6 +147,28 @@ class _StallProfileScreenState extends ConsumerState<StallProfileScreen> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            VendorPreviewCard(
+              stallName: stallNameController.text,
+              description: descriptionController.text,
+              logoUrl: logoUrl,
+              coverImageUrl: coverImageUrl,
+              openingTime: openingController.text,
+              closingTime: closingController.text,
+              instagram: instagramController.text,
+              primaryCategory: primaryCategory,
+              secondaryCategory: secondaryCategory,
+            ),
+
+            const SizedBox(height: 24),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Cover Image',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
+
+            const SizedBox(height: 8),
             GestureDetector(
               onTap: uploadCover,
               child: Container(
@@ -148,7 +197,15 @@ class _StallProfileScreenState extends ConsumerState<StallProfileScreen> {
             ),
 
             const SizedBox(height: 12),
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'Logo',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            ),
 
+            const SizedBox(height: 8),
             GestureDetector(
               onTap: uploadLogo,
               child: CircleAvatar(
