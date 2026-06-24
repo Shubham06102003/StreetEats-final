@@ -9,6 +9,8 @@ import '../../features/location/presentation/screens/vendor_location_screen.dart
 import '../../features/menu/presentation/screens/menu_screen.dart';
 import '../../features/menu/presentation/screens/add_menu_item_screen.dart';
 import '../../features/vendor/presentation/screens/stall_profile_screen.dart';
+import '../../features/customer/presentation/screens/customer_home_screen.dart';
+import '../../features/customer/presentation/screens/vendor_details_screen.dart';
 
 final appRouter = GoRouter(
   routes: [
@@ -31,10 +33,9 @@ final appRouter = GoRouter(
       builder: (context, state) => const VendorDashboardScreen(),
     ),
     GoRoute(
-  path: '/stall-profile',
-  builder: (context, state) =>
-      const StallProfileScreen(),
-),
+      path: '/stall-profile',
+      builder: (context, state) => const StallProfileScreen(),
+    ),
     GoRoute(
       path: '/vendor-location',
       builder: (context, state) => const VendorLocationScreen(),
@@ -58,6 +59,18 @@ final appRouter = GoRouter(
           initialDescription: data['description'],
           initialImageUrl: data['imageUrl'],
         );
+      },
+    ),
+    GoRoute(
+      path: '/customer-home',
+      builder: (context, state) => const CustomerHomeScreen(),
+    ),
+    GoRoute(
+      path: '/vendor-details',
+      builder: (context, state) {
+        final vendorId = state.extra as String;
+
+        return VendorDetailsScreen(vendorId: vendorId);
       },
     ),
   ],

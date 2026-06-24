@@ -1,0 +1,254 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../customer_provider.dart';
+
+class VendorDetailsScreen extends ConsumerWidget {
+  final String vendorId;
+
+  const VendorDetailsScreen({
+    super.key,
+    required this.vendorId,
+  });
+
+  @override
+  Widget build(
+    BuildContext context,
+    WidgetRef ref,
+  ) {
+    final repository =
+        ref.read(
+          vendorDetailsRepositoryProvider,
+        );
+
+    return Scaffold(
+      body: FutureBuilder<
+          DocumentSnapshot<
+              Map<String, dynamic>>>(
+        future:
+            repository.getVendor(
+          vendorId,
+        ),
+        builder:
+            (context, vendorSnapshot) {
+          if (!vendorSnapshot.hasData) {
+            return const Center(
+              child:
+                  CircularProgressIndicator(),
+            );
+          }
+
+          final vendor =
+              vendorSnapshot
+                  .data!
+                  .data();
+
+          if (vendor == null) {
+            return const Center(
+              child:
+                  Text(
+                'Vendor not found',
+              ),
+            );
+          }
+
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                expandedHeight: 250,
+                pinned: true,
+                flexibleSpace:
+                    FlexibleSpaceBar(
+                  background:
+                      vendor['coverImageUrl'] !=
+                              null &&
+                          vendor['coverImageUrl']
+                              .isNotEmpty
+                      ? Image.network(
+                          vendor[
+                              'coverImageUrl'],
+                          fit:
+                              BoxFit.cover,
+                        )
+                      : Container(
+                          color:
+                              Colors.grey,
+                        ),
+                ),
+              ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding:
+                      const EdgeInsets.all(
+                    16,
+                  ),
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment
+                            .start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 35,
+                            backgroundImage:
+                                vendor['logoUrl'] !=
+                                            null &&
+                                        vendor['logoUrl']
+                                            .isNotEmpty
+                                    ? NetworkImage(
+                                        vendor['logoUrl'],
+                                      )
+                                    : null,
+                          ),
+
+                          const SizedBox(
+                            width: 16,
+                          ),
+
+                          Expanded(
+                            child: Text(
+                              vendor['stallName'] ??
+                                  '',
+                              style:
+                                  const TextStyle(
+                                fontSize:
+                                    24,
+                                fontWeight:
+                                    FontWeight
+                                        .bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(
+                        height: 16,
+                      ),
+
+                      Text(
+                        vendor['description'] ??
+                            '',
+                      ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+
+                      const Text(
+                        'Menu',
+                        style:
+                            TextStyle(
+                          fontSize: 22,
+                          fontWeight:
+                              FontWeight
+                                  .bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              SliverFillRemaining(
+                child: StreamBuilder<
+                    QuerySnapshot<
+                        Map<String,
+                            dynamic>>>(
+                  stream:
+                      repository
+                          .getVendorMenu(
+                    vendorId,
+                  ),
+                  builder:
+                      (
+                        context,
+                        menuSnapshot,
+                      ) {
+                    if (!menuSnapshot
+                        .hasData) {
+                      return const Center(
+                        child:
+                            CircularProgressIndicator(),
+                      );
+                    }
+
+                    final menuItems =
+                        menuSnapshot
+                            .data!
+                            .docs;
+
+                    if (menuItems
+                        .isEmpty) {
+                      return const Center(
+                        child: Text(
+                          'No menu items available',
+                        ),
+                      );
+                    }
+
+                    return ListView.builder(
+                      itemCount:
+                          menuItems.length,
+                      itemBuilder:
+                          (
+                            context,
+                            index,
+                          ) {
+                        final item =
+                            menuItems[index]
+                                .data();
+
+                        return Card(
+                          margin:
+                              const EdgeInsets.symmetric(
+                            horizontal:
+                                16,
+                            vertical:
+                                8,
+                          ),
+                          child:
+                              ListTile(
+                            leading:
+                                item['imageUrl'] !=
+                                            null &&
+                                        item['imageUrl']
+                                            .isNotEmpty
+                                    ? Image.network(
+                                        item['imageUrl'],
+                                        width:
+                                            60,
+                                        fit:
+                                            BoxFit.cover,
+                                      )
+                                    : null,
+                            title: Text(
+                              item['name'] ??
+                                  '',
+                            ),
+                            subtitle:
+                                Text(
+                              item['description'] ??
+                                  '',
+                            ),
+                            trailing:
+                                Text(
+                              '₹${item['basePrice']}',
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
