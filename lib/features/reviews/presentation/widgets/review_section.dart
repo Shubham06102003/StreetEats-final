@@ -86,20 +86,20 @@ class ReviewSection extends ConsumerWidget {
               return Card(
                 margin: const EdgeInsets.only(bottom: 12),
                 child: ListTile(
-                  leading: const CircleAvatar(child: Icon(Icons.person)),
-                  title: Text(review['userName'] ?? 'Customer'),
-                  subtitle: Text(review['review'] ?? ''),
-                  trailing: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text('⭐ ${review['rating']}'),
+                  leading: CircleAvatar(
+                    backgroundImage: (review['userPhotoUrl'] ?? '').isNotEmpty
+                        ? NetworkImage(review['userPhotoUrl'])
+                        : null,
+                    child: (review['userPhotoUrl'] ?? '').isEmpty
+                        ? const Icon(Icons.person)
+                        : null,
                   ),
+
+                  title: Text(review['userName'] ?? 'Customer'),
+
+                  subtitle: Text(review['review'] ?? ''),
+
+                  trailing: Text('⭐ ${review['rating']}'),
                 ),
               );
             }),

@@ -7,6 +7,8 @@ import '../customer_provider.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../core/location/location_provider.dart';
 import '../widgets/customer_map_widget.dart';
+import '../../../favorites/presentation/widgets/favorite_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CustomerHomeScreen extends ConsumerStatefulWidget {
   const CustomerHomeScreen({super.key});
@@ -82,7 +84,54 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
     final repository = ref.read(customerRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Street Food Finder')),
+      appBar: AppBar(
+        title: const Text('Street Food Finder'),
+        actions: [
+  Padding(
+    padding: const EdgeInsets.only(right: 12),
+    child: GestureDetector(
+      onTap: () {
+        context.push('/profile');
+      },
+      child: FutureBuilder(
+        future: FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .get(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const CircleAvatar(
+              radius: 18,
+              child: Icon(Icons.person),
+            );
+          }
+
+          final data = snapshot.data!.data();
+
+          final photoUrl =
+              data?['photoUrl'] ?? '';
+
+          return CircleAvatar(
+            radius: 18,
+            backgroundImage:
+                photoUrl.isNotEmpty
+                    ? NetworkImage(
+                        photoUrl,
+                      )
+                    : null,
+            child:
+                photoUrl.isEmpty
+                    ? const Icon(
+                        Icons.person,
+                      )
+                    : null,
+          );
+        },
+      ),
+    ),
+  ),
+],
+      ),
       body: Column(
         children: [
           Padding(
@@ -224,26 +273,39 @@ class _CustomerHomeScreenState extends ConsumerState<CustomerHomeScreen> {
                                   ),
                                 ),
 
-                                GestureDetector(
-                                  onTap: () {
-                                    context.push(
-                                      '/vendor-details',
-                                      extra: filteredVendors[index].id,
-                                    );
-                                  },
-                                  child: VendorPreviewCard(
-                                    stallName: data['stallName'] ?? '',
-                                    description: data['description'] ?? '',
-                                    logoUrl: data['logoUrl'] ?? '',
-                                    coverImageUrl: data['coverImageUrl'] ?? '',
-                                    openingTime: data['openingTime'] ?? '',
-                                    closingTime: data['closingTime'] ?? '',
-                                    instagram: data['instagram'] ?? '',
-                                    primaryCategory:
-                                        data['primaryCategory'] ?? '',
-                                    secondaryCategory:
-                                        data['secondaryCategory'] ?? '',
-                                  ),
+                                Stack(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        context.push(
+                                          '/vendor-details',
+                                          extra: filteredVendors[index].id,
+                                        );
+                                      },
+                                      child: VendorPreviewCard(
+                                        stallName: data['stallName'] ?? '',
+                                        description: data['description'] ?? '',
+                                        logoUrl: data['logoUrl'] ?? '',
+                                        coverImageUrl:
+                                            data['coverImageUrl'] ?? '',
+                                        openingTime: data['openingTime'] ?? '',
+                                        closingTime: data['closingTime'] ?? '',
+                                        instagram: data['instagram'] ?? '',
+                                        primaryCategory:
+                                            data['primaryCategory'] ?? '',
+                                        secondaryCategory:
+                                            data['secondaryCategory'] ?? '',
+                                      ),
+                                    ),
+
+                                    Positioned(
+                                      top: 12,
+                                      right: 12,
+                                      child: FavoriteButton(
+                                        vendorId: filteredVendors[index].id,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

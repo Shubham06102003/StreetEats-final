@@ -12,7 +12,15 @@ class ProfileScreen extends ConsumerWidget {
     final profileAsync = ref.watch(userProfileProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
+      appBar: AppBar(
+        title: const Text('Profile'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.pop();
+          },
+        ),
+      ),
       body: profileAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stackTrace) => Center(
@@ -71,6 +79,16 @@ class ProfileScreen extends ConsumerWidget {
                       const SizedBox(height: 8),
 
                       Text(email, style: const TextStyle(color: Colors.grey)),
+
+                      const SizedBox(height: 12),
+
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          context.push('/edit-profile');
+                        },
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit Profile'),
+                      ),
 
                       const SizedBox(height: 16),
 
@@ -152,7 +170,9 @@ class ProfileScreen extends ConsumerWidget {
                   leading: const Icon(Icons.favorite),
                   title: const Text('Favorites'),
                   trailing: const Icon(Icons.arrow_forward_ios),
-                  onTap: () {},
+                  onTap: () {
+                    context.push('/favorites');
+                  },
                 ),
 
                 const Divider(),

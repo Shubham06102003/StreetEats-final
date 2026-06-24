@@ -14,21 +14,39 @@ class ReviewRepository {
   }
 
   Future<void> addReview({
-    required String vendorId,
-    required double rating,
-    required String review,
-  }) async {
-    final user = auth.currentUser;
+  required String vendorId,
+  required double rating,
+  required String review,
+}) async {
+  final user = auth.currentUser;
 
-    if (user == null) return;
+  if (user == null) return;
 
-    await firestore.collection('vendor_reviews').add({
-      'vendorId': vendorId,
-      'userId': user.uid,
-      'userName': user.displayName ?? 'Customer',
-      'rating': rating,
-      'review': review,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-  }
+  final userDoc = await firestore
+      .collection('users')
+      .doc(user.uid)
+      .get();
+
+  final userData = userDoc.data();
+
+  await firestore
+      .collection('vendor_reviews')
+      .add({
+    'vendorId': vendorId,
+    'userId': user.uid,
+    'userName':
+        userData?['name'] ??
+        'Customer',
+
+    'userPhotoUrl':
+        userData?['photoUrl'] ??
+        '',
+
+    'rating': rating,
+    'review': review,
+
+    'createdAt':
+        FieldValue.serverTimestamp(),
+  });
+}
 }

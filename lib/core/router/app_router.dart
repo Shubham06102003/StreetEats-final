@@ -11,6 +11,8 @@ import '../../features/menu/presentation/screens/add_menu_item_screen.dart';
 import '../../features/vendor/presentation/screens/stall_profile_screen.dart';
 import '../../features/customer/presentation/screens/customer_home_screen.dart';
 import '../../features/customer/presentation/screens/vendor_details_screen.dart';
+import '../../features/profile/presentation/screens/edit_profile_screen.dart';
+import '../../features/favorites/presentation/screens/favorites_screen.dart';
 
 final appRouter = GoRouter(
   routes: [
@@ -72,6 +74,14 @@ final appRouter = GoRouter(
 
         return VendorDetailsScreen(vendorId: vendorId);
       },
+    ),
+    GoRoute(
+      path: '/edit-profile',
+      builder: (context, state) => const EditProfileScreen(),
+    ),
+    GoRoute(
+      path: '/favorites',
+      builder: (context, state) => const FavoritesScreen(),
     ),
   ],
 );

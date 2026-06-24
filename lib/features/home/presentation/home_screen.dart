@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              context.go('/profile');
+              context.push('/profile');
             },
           ),
         ],
@@ -22,23 +22,30 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const Icon(Icons.restaurant, size: 80, color: Colors.orange),
+
+            const SizedBox(height: 20),
+
             const Text(
-              'Logged In Successfully 🎉',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              'Welcome to Street Food Finder',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+
+            const SizedBox(height: 12),
+
+            const Text(
+              'Discover amazing street food near you',
+              textAlign: TextAlign.center,
             ),
 
             const SizedBox(height: 30),
 
-            ElevatedButton(
+            ElevatedButton.icon(
               onPressed: () {
-                context.push('/customer-home');
+                context.go('/customer-home');
               },
-              child: const Text(
-                'Open Customer Home',
-              ),
+              icon: const Icon(Icons.map),
+              label: const Text('Explore Nearby Stalls'),
             ),
           ],
         ),
